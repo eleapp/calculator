@@ -1,19 +1,151 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+<head>
+<meta charset="UTF-8">
+<title>Calculator</title>
+<style>
+*{-webkit-user-select: none}
+html,body{
+  width: 100%;height: 100%;margin: 0;padding: 0;
+}
+body{
+  background-color: #3e3e3e;
+}
+table{
+  width: 100%;height: 100%;
+  table-layout: fixed;
+  text-align: center;
+  border-color: yellow;
+  border-spacing: 1px;
+}
+td{
+  color: #fff;
+  font-size: 20px;
+  vertical-align: middle;
+}
+td.result{
+  height: 75px;
+  padding: 0 10px 6px 10px;
+  vertical-align: bottom;
+  text-align: right;
+  font-size: 50px;
+  font-weight: lighter;
+  line-height: 1;
+  -webkit-app-region: drag;
+}
+td.option{background-color: #505050}
+td.number{background-color: #6d6d6d}
+td.symbol{background-color: #f2a23c}
+</style>
+</head>
+<body>
+  <table>
+    <tr>
+      <td class="result" colspan="4"><span id="result">0</span></td>
+    </tr>
+    <tr>
+      <td class="option" data-s="c">C</td>
+      <td class="option" data-s="n">±</td>
+      <td class="option" data-s="%">%</td>
+      <td class="symbol" data-s="/">÷</td>
+    </tr>
+    <tr>
+      <td class="number" data-s="7">7</td>
+      <td class="number" data-s="8">8</td>
+      <td class="number" data-s="9">9</td>
+      <td class="symbol" data-s="*">×</td>
+    </tr>
+    <tr>
+      <td class="number" data-s="4">4</td>
+      <td class="number" data-s="5">5</td>
+      <td class="number" data-s="6">6</td>
+      <td class="symbol" data-s="-">-</td>
+    </tr>
+    <tr>
+      <td class="number" data-s="1">1</td>
+      <td class="number" data-s="2">2</td>
+      <td class="number" data-s="3">3</td>
+      <td class="symbol" data-s="+">+</td>
+    </tr>
+    <tr>
+      <td class="number" data-s="0" colspan="2" style="padding-right: 25%">0</td>
+      <td class="number" data-s=".">.</td>
+      <td class="symbol" data-s="=">=</td>
+    </tr>
+  </table>
+</body>
+<script>
+window.onload = function(){
+  var eles = document.querySelectorAll('[data-s]')
+  for(var k in eles){
+    eles[k].onclick = function(){
+      input(this.dataset.s)
+    }
+  }
+}
 
-    <script>
-      // You can also require other files to run in this process
-      require('./renderer.js')
-    </script>
-  </body>
+var oldnum = 0, newnum, symbol, inmode = true, camode = false
+
+var input = function(s){
+  var result = document.getElementById('result')
+  var output = result.innerText
+  var val = parseFloat(result.innerText)
+
+  switch(s){
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+      if(!inmode || output == '0') output = ''
+      inmode = true
+      output += s
+      break
+    case '.':
+      if(output.indexOf(s) < 0) output += s
+      break
+    case 'c':
+      output = '0'
+      break
+    case 'n':
+      output = val * -1
+      break
+    case '%':
+      output = val * 0.01
+      break
+    case '+': oldnum += val; break
+    case '-': oldnum -= val; break
+    case '*': oldnum *= val; break
+    case '/': oldnum /= val; break
+    case '=':
+      if(camode){
+        newnum = val
+        camode = false
+      }
+      oldnum = oldnum || 0
+      switch(symbol){
+        case '+': oldnum += newnum; break
+        case '-': oldnum -= newnum; break
+        case '*': oldnum *= newnum; break
+        case '/': oldnum /= newnum; break
+      }
+      output = oldnum
+      break
+  }
+
+  if('+-*/'.indexOf(s) >=0 ){
+    symbol = s
+    inmode = false
+    camode = true
+    output = oldnum
+  }
+
+  result.innerText = output
+}
+</script>
 </html>
