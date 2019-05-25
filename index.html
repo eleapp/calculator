@@ -10,6 +10,7 @@ html,body{
 }
 body{
   background-color: #3e3e3e;
+  overflow: hidden;
 }
 table{
   width: 100%;height: 100%;
@@ -36,6 +37,10 @@ td.result{
 td.option{background-color: #505050}
 td.number{background-color: #6d6d6d}
 td.symbol{background-color: #f2a23c}
+
+td.option:active{background-color: #6d6d6d}
+td.number:active{background-color: #a5a5a5}
+td.symbol:active{background-color: #c0802d}
 </style>
 </head>
 <body>
@@ -44,9 +49,9 @@ td.symbol{background-color: #f2a23c}
       <td class="result" colspan="4"><span id="result">0</span></td>
     </tr>
     <tr>
-      <td class="option" data-s="c">C</td>
+      <td class="option" data-s="c">c</td>
       <td class="option" data-s="n">±</td>
-      <td class="option" data-s="%">%</td>
+      <td class="option" data-s="%">﹪</td>
       <td class="symbol" data-s="/">÷</td>
     </tr>
     <tr>
@@ -82,6 +87,10 @@ window.onload = function(){
       input(this.dataset.s)
     }
   }
+}
+
+document.onkeydown = function(e){
+  input(e.key)
 }
 
 var oldnum = 0, newnum, symbol, inmode = true, camode = false
